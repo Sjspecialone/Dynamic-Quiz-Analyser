@@ -210,10 +210,12 @@ void showOverallLeaderboard() {
         cout << "Leaderboard empty\n";
         return;
     }
-    int i = 0, rank = 1;
-    while (i < lbCountOverall) {
-        cout << rank << ") " << lbNamesOverall[i] << " : " << lbScoresOverall[i] << "\n";
-        i++; rank++;
+
+    cout << "\nNAME\t\tSCORE\n";
+    cout << "---------------------------\n";
+
+    for (int i = 0; i < lbCountOverall; i++) {
+        cout << lbNamesOverall[i] << "\t\t" << lbScoresOverall[i] << "\n";
     }
 }
 
@@ -289,12 +291,6 @@ int main() {
                         cout << "\n----- PROFILE -----\n";
                         cout << "Username: " << users[idx] << "\n";
                         cout << "Total Score: " << userScores[idx] << "\n";
-                        cout << "Per-level scores: ";
-                        for (int l = 0; l < LEVELS; ++l) {
-                            cout << levelName[l] << "=" << userPerLevelScores[idx][l];
-                            if (l < LEVELS-1) cout << ", ";
-                        }
-                        cout << "\n";
                     }
                     else if (opt == 4) {
                         cout << "\n--- Overall Leaderboard ---\n";
@@ -306,6 +302,7 @@ int main() {
                         int level = 0;
                         int wrongStreak = 0;
                         int perLevelScore[LEVELS] = {0,0,0};
+                        int penalty = 5;
 
                         while (level < LEVELS) {
                             if (qIndex[level] >= Q_PER_LEVEL) { 
@@ -330,6 +327,10 @@ int main() {
                                 cout << "Wrong answer\n";
                                 int correctIndex = correctAns[level][qIndex[level]-1] - 1;
                                 cout << "Correct answer: " << qOpt[level][qIndex[level]-1][correctIndex] << "\n";
+                                if (userScores[idx] <= penalty) userScores[idx] = 0;
+                                else userScores[idx] -= penalty;
+                                if (perLevelScore[level] <= penalty) perLevelScore[level] = 0;
+                                else perLevelScore[level] -= penalty;
                                 wrongStreak++;
                                 if (wrongStreak >= 2) {
                                     cout << "Backtrack to easier level\n";
